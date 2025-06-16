@@ -4,13 +4,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Customers;
+import model.Users;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserDAO extends DBContext {
 
     // Đăng ký người dùng với vai trò xác định
-    public boolean register(Customers user) {
+    public boolean register(Users user) {
         String sql = "INSERT INTO Users (name, gender, role, phone, email, address, id_number, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
@@ -34,7 +34,7 @@ public class UserDAO extends DBContext {
     }
 
     // Đăng nhập (email + password) và kiểm tra role
-    public Customers login(String email, String password) {
+    public Users login(String email, String password) {
         String sql = "SELECT * FROM Users WHERE email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -42,7 +42,7 @@ public class UserDAO extends DBContext {
             if (rs.next()) {
                 String storedHash = rs.getString("password");
                 if (BCrypt.checkpw(password, storedHash)) {
-                    Customers user = new Customers();
+                    Users user = new Users();
                     user.setUserId(rs.getInt("user_id"));
                     user.setName(rs.getString("name"));
                     user.setGender(rs.getString("gender"));
@@ -61,14 +61,14 @@ public class UserDAO extends DBContext {
     }
 
     // Lấy danh sách tất cả người dùng
-    public List<Customers> getAllUsers() {
-        List<Customers> list = new ArrayList<>();
+    public List<Users> getAllUsers() {
+        List<Users> list = new ArrayList<>();
         String sql = "SELECT * FROM Users";
         try (PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Customers u = new Customers();
+                Users u = new Users();
                 u.setUserId(rs.getInt("user_id"));
                 u.setName(rs.getString("name"));
                 u.setGender(rs.getString("gender"));
@@ -88,13 +88,13 @@ public class UserDAO extends DBContext {
     }
 
     // Tìm người dùng theo ID
-    public Customers getUserById(int userId) {
+    public Users getUserById(int userId) {
         String sql = "SELECT * FROM Users WHERE user_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                Customers u = new Customers();
+                Users u = new Users();
                 u.setUserId(rs.getInt("user_id"));
                 u.setName(rs.getString("name"));
                 u.setGender(rs.getString("gender"));

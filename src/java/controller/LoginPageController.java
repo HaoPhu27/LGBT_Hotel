@@ -1,7 +1,7 @@
 package controller;
 
 import dao.UserDAO;
-import model.Customers;
+import model.Users;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -38,7 +38,7 @@ public class LoginPageController extends HttpServlet {
         String remember = request.getParameter("remember");
 
         UserDAO dao = new UserDAO();
-        Customers user = dao.login(email, password);
+        Users user = dao.login(email, password);
 
         if (user != null) {
             // ✅ Đăng nhập thành công – lưu vào session

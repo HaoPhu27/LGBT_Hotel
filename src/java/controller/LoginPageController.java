@@ -1,7 +1,7 @@
 package controller;
 
 import dao.UserDAO;
-import model.Customers;
+import model.Users;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -13,7 +13,7 @@ public class LoginPageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
         // ✅ Lấy cookie nếu có và gửi email xuống login.jsp
         Cookie[] cookies = request.getCookies();
@@ -31,19 +31,21 @@ public class LoginPageController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String remember = request.getParameter("remember");
 
         UserDAO dao = new UserDAO();
-        Customers user = dao.login(email, password);
+        Users user = dao.login(email, password);
 
         if (user != null) {
             // ✅ Đăng nhập thành công – lưu vào session
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
+            session.setAttribute("userRole", user.getRole());
+            session.setAttribute("username", user.getName());
 
             // ✅ Ghi nhớ email nếu checkbox được chọn
             if ("on".equals(remember)) {
@@ -60,14 +62,14 @@ public class LoginPageController extends HttpServlet {
             // ✅ Chuyển hướng theo vai trò
             switch (user.getRole()) {
                 case "admin":
-                    response.sendRedirect(request.getContextPath() + "/admin/dashboard.jsp");
+                    response.sendRedirect(request.getContextPath() + "/view/admin/dashboard.jsp");
                     break;
                 case "staff":
-                    response.sendRedirect(request.getContextPath() + "/staff/home.jsp");
+                    response.sendRedirect(request.getContextPath() + "/staff/home");
                     break;
                 case "customer":
                 default:
-                    response.sendRedirect(request.getContextPath() + "/home.jsp");
+                    response.sendRedirect(request.getContextPath() + "/home");
                     break;
             }
 

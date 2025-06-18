@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page session="true" %>
-<%@ page import="model.Customers" %>
+<%@ page import="model.Users" %>
 <%
     String error = (String) request.getAttribute("error");
     String rememberedEmail = (String) request.getAttribute("rememberedEmail");
-    Customers user = (Customers) session.getAttribute("user");
+    Users user = (Users) session.getAttribute("user");
 %>
 <!DOCTYPE html>
 <html>

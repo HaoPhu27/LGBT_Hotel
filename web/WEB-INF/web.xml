@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+                             https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <!-- 1️⃣ Map URL /home.jsp tới file thực /view/hotel/home.jsp -->
+    <servlet>
+        <servlet-name>HomeJsp</servlet-name>
+        <!-- đường dẫn bên trong ứng dụng tới file JSP -->
+        <jsp-file>/view/hotel/home.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HomeJsp</servlet-name>
+        <!-- URL rút gọn hiển thị cho người dùng -->
+        <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+
+    <!-- 2️⃣ Gõ http://localhost:9999/LGBT_Hotel/ sẽ tự vào /home.jsp -->
+    <welcome-file-list>
+        <welcome-file>home.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>
+
+
+

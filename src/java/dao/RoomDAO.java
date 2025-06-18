@@ -69,4 +69,37 @@ public class RoomDAO extends DBContext {
         }
         return false;
     }
+public void insertRoom(Rooms r) throws SQLException {
+    String sql = "INSERT INTO Rooms (room_number, type, price, status, note, image_url) VALUES (?, ?, ?, ?, ?, ?)";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, r.getRoomNumber());
+        ps.setString(2, r.getType());
+        ps.setBigDecimal(3, r.getPrice());
+        ps.setString(4, r.getStatus());
+        ps.setString(5, r.getNote());
+        ps.setString(6, r.getImageUrl());
+        ps.executeUpdate();
+    }
+}
+
+public List<Rooms> getAllRooms() throws SQLException {
+    List<Rooms> list = new ArrayList<>();
+    String sql = "SELECT * FROM Rooms";
+
+    try (PreparedStatement ps = connection.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+            Rooms r = new Rooms();
+            r.setRoomId(rs.getInt("room_id"));
+            r.setRoomNumber(rs.getString("room_number"));
+            r.setType(rs.getString("type"));
+            r.setPrice(rs.getBigDecimal("price"));
+            r.setStatus(rs.getString("status"));
+            r.setNote(rs.getString("note"));
+            r.setImageUrl(rs.getString("image_url"));
+            list.add(r);
+        }
+    }
+    return list;
+}
 }

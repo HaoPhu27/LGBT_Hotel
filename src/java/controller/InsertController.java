@@ -1,7 +1,7 @@
 package controller;
 
 import dao.UserDAO;
-import model.Customers;
+import model.Users;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -52,7 +52,7 @@ public class InsertController extends HttpServlet {
         }
 
         // ✅ Tạo đối tượng user
-        Customers user = new Customers();
+        Users user = new Users();
         user.setName(name);
         user.setGender(gender);
         user.setPhone(phone);

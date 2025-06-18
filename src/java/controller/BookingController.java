@@ -3,7 +3,7 @@ package controller;
 import dao.BookingsDAO;
 import dao.RoomDAO;
 import model.Bookings;
-import model.Customers;
+import model.Users;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -19,7 +19,7 @@ public class BookingController extends HttpServlet {
         throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Customers user = (Customers) (session != null ? session.getAttribute("user") : null);
+        Users user = (Users) (session != null ? session.getAttribute("user") : null);
 
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login");

@@ -63,9 +63,9 @@ public class DashboardController extends HttpServlet {
      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
 
-        List<Rooms> roomList;
+        var roomList = new List();
         try {
-            roomList = new RoomDAO().getAllRooms(); // lấy danh sách phòng
+            roomList = (List) new RoomDAO().getAllRooms(); // lấy danh sách phòng
         } catch (SQLException ex) {
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
         }

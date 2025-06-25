@@ -1,71 +1,55 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
+
 package controller;
 
 import dao.RoomDAO;
-import model.Rooms;
-
+import jakarta.servlet.RequestDispatcher;
+import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
-
-import java.io.*;
-import java.math.BigDecimal;
-import java.nio.file.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Rooms;
 
-@WebServlet(name = "RoomController", urlPatterns = {"/RoomController"})
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-                 maxFileSize = 1024 * 1024 * 10,      // 10MB
-                 maxRequestSize = 1024 * 1024 * 50)   // 50MB
+/**
+ *
+ * @author admin
+ */
+@WebServlet("/rooms")
 public class RoomController extends HttpServlet {
 
-    private static final String UPLOAD_DIR = "assets/images/rooms";
+    private RoomDAO roomDAO;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    public void init() {
+        // Ở đây giả sử bạn khởi tạo DAO trực tiếp.
+        // Thực tế có thể lấy DataSource từ context hoặc DI framework (Spring, CDI, …).
+        roomDAO = new RoomDAO();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
-
-        // 1. Nhận dữ liệu từ form
-        String roomNumber = req.getParameter("roomCode");
-        String type       = req.getParameter("roomType");
-        BigDecimal price  = new BigDecimal(req.getParameter("roomPrice"));
-        String note       = req.getParameter("roomDescription");
-
-        // 2. Upload ảnh
-        Part filePart = req.getPart("roomImage"); // <input name="roomImage">
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-
-        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
-        Files.createDirectories(Paths.get(uploadPath)); // Tạo folder nếu chưa có
-
-        String filePath = uploadPath + File.separator + fileName;
-        filePart.write(filePath);
-
-        // Đường dẫn ảnh dùng trong HTML
-        String imageUrl = req.getContextPath() + "/" + UPLOAD_DIR + "/" + fileName;
-
-        // 3. Tạo đối tượng Room và lưu DB
-        Rooms room = new Rooms();
-        room.setRoomNumber(roomNumber);
-        room.setType(type);
-        room.setPrice(price);
-        room.setStatus("empty");
-        room.setNote(note);
-        room.setImageUrl(imageUrl);
-
-        // Gọi DAO
-        RoomDAO dao = new RoomDAO();
+        List<Rooms> rooms = null; // Ghi log chi tiết và đẩy ra trang lỗi tùy ý
         try {
-            dao.insertRoom(room);  // nhớ phương thức phải tên insertRoom như mình đã gợi ý
+            rooms = roomDAO.getAllRooms(); // gọi phương thức bạn đã có
         } catch (SQLException ex) {
             Logger.getLogger(RoomController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // 4. Redirect
-        resp.sendRedirect(req.getContextPath() + "/view/admin/dashboard.jsp");
+        request.setAttribute("rooms", rooms);          // gán vào request
+        RequestDispatcher rd = request.getRequestDispatcher("/view/hotel/rooms.jsp");
+        rd.forward(request, response);                 // chuyển tiếp tới view
     }
+
+    // Nếu sau này cần đặt phòng, lọc phòng, … bạn có thể override doPost/doPut
 }

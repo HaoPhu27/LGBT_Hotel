@@ -9,7 +9,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/register")
-public class InsertController extends HttpServlet {
+public class RegisterController extends HttpServlet {
 
     // ✅ Regex kiểm tra mật khẩu: 8-14 ký tự, 1 hoa, 1 số, 1 đặc biệt
     private boolean isValidPassword(String password) {

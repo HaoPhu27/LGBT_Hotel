@@ -14,18 +14,7 @@ public class LoginPageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // ✅ Lấy cookie nếu có và gửi email xuống login.jsp
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie ck : cookies) {
-                if ("rememberedEmail".equals(ck.getName())) {
-                    request.setAttribute("rememberedEmail", ck.getValue());
-                    break;
-                }
-            }
-        }
-
+        // Hiển thị form đăng nhập
         request.getRequestDispatcher("/view/hotel/login.jsp").forward(request, response);
     }
 
@@ -35,31 +24,18 @@ public class LoginPageController extends HttpServlet {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        String remember = request.getParameter("remember");
 
         UserDAO dao = new UserDAO();
         Users user = dao.login(email, password);
 
         if (user != null) {
-            // ✅ Đăng nhập thành công – lưu vào session
-            HttpSession session = request.getSession();
+            // Đăng nhập thành công – lưu thông tin vào session
+            HttpSession session = request.getSession(true);
             session.setAttribute("user", user);
             session.setAttribute("userRole", user.getRole());
             session.setAttribute("username", user.getName());
 
-            // ✅ Ghi nhớ email nếu checkbox được chọn
-            if ("on".equals(remember)) {
-                Cookie cookie = new Cookie("rememberedEmail", email);
-                cookie.setMaxAge(60 * 60 * 24 * 7); // 7 ngày
-                response.addCookie(cookie);
-            } else {
-                // ✅ Xóa cookie nếu không chọn
-                Cookie cookie = new Cookie("rememberedEmail", "");
-                cookie.setMaxAge(0); // xóa
-                response.addCookie(cookie);
-            }
-
-            // ✅ Chuyển hướng theo vai trò
+            // Chuyển hướng theo vai trò
             switch (user.getRole()) {
                 case "admin":
                     response.sendRedirect(request.getContextPath() + "/view/admin/dashboard.jsp");
@@ -74,7 +50,7 @@ public class LoginPageController extends HttpServlet {
             }
 
         } else {
-            // ❌ Sai thông tin – quay lại login.jsp
+            // Sai thông tin đăng nhập – quay lại login.jsp
             request.setAttribute("error", "Email hoặc mật khẩu không đúng!");
             request.getRequestDispatcher("/view/hotel/login.jsp").forward(request, response);
         }

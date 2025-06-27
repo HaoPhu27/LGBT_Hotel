@@ -20,7 +20,7 @@
 
     <!-- 2️⃣ Gõ http://localhost:9999/LGBT_Hotel/ sẽ tự vào /home.jsp -->
     <welcome-file-list>
-        <welcome-file>home.jsp</welcome-file>
+        <welcome-file>home</welcome-file>
     </welcome-file-list>
 
 </web-app>

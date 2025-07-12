@@ -64,8 +64,7 @@ public class UserDAO extends DBContext {
     public List<Users> getAllUsers() {
         List<Users> list = new ArrayList<>();
         String sql = "SELECT * FROM Users";
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Users u = new Users();
@@ -110,4 +109,57 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
+
+    public boolean updatePhoneAndAddress(int userId, String phone, String address) {
+        String sql = "UPDATE Users SET phone = ?, address = ? WHERE user_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            ps.setString(2, address);
+            ps.setInt(3, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Users getUserByEmail(String email) {
+        String sql = "SELECT * FROM Users WHERE email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Users u = new Users();
+                u.setUserId(rs.getInt("user_id"));
+                u.setName(rs.getString("name"));
+                u.setEmail(rs.getString("email"));
+                return u;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void saveResetToken(String email, String token) {
+        String sql = "UPDATE Users SET reset_token = ? WHERE email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, token);
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public boolean updatePassword(int userId, String hashedPassword) {
+    String sql = "UPDATE Users SET password = ? WHERE user_id = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, hashedPassword);
+        ps.setInt(2, userId);
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 }

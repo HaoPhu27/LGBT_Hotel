@@ -77,4 +77,15 @@ public class ServiceDAO extends DBContext {
         }
         return null;
     }
+    public BigDecimal getPriceById(int serviceId) throws SQLException {
+        String sql = "SELECT price FROM Services WHERE service_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, serviceId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getBigDecimal("price");
+            }
+        }
+        return BigDecimal.ZERO; // Trường hợp không tìm thấy dịch vụ
+    }
 } 

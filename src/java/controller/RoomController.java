@@ -1,55 +1,62 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controller;
 
+import dao.BookingsDAO;
 import dao.RoomDAO;
+import dao.ServiceDAO;
 import jakarta.servlet.RequestDispatcher;
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Rooms;
+import model.Service;
+
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Rooms;
 
-/**
- *
- * @author admin
- */
 @WebServlet("/rooms")
 public class RoomController extends HttpServlet {
 
     private RoomDAO roomDAO;
+    private ServiceDAO serviceDAO;
+    private BookingsDAO bookingsDAO;
 
     @Override
     public void init() {
-        // Ở đây giả sử bạn khởi tạo DAO trực tiếp.
-        // Thực tế có thể lấy DataSource từ context hoặc DI framework (Spring, CDI, …).
         roomDAO = new RoomDAO();
+        serviceDAO = new ServiceDAO();
+        bookingsDAO = new BookingsDAO(); // ✅ Khai báo đúng biến
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<Rooms> rooms = null; // Ghi log chi tiết và đẩy ra trang lỗi tùy ý
         try {
-            rooms = roomDAO.getAllRooms(); // gọi phương thức bạn đã có
+            List<Rooms> rooms = roomDAO.getAllRooms(); // ✅ lấy danh sách phòng
+            List<Service> services = serviceDAO.getAllServices(); // ✅ lấy danh sách dịch vụ
+
+            request.setAttribute("rooms", rooms);
+            request.setAttribute("services", services);
+            Map<Integer, List<String>> roomBookedDatesMap = new HashMap<>();
+            for (Rooms room : rooms) {
+                List<String> dates = bookingsDAO.getBookedDatesByRoomId(room.getRoomId());
+                roomBookedDatesMap.put(room.getRoomId(), dates);
+            }
+            request.setAttribute("roomBookedDatesMap", roomBookedDatesMap);
         } catch (SQLException ex) {
             Logger.getLogger(RoomController.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("error", "Không thể tải danh sách phòng hoặc dịch vụ.");
         }
-        request.setAttribute("rooms", rooms);          // gán vào request
-        RequestDispatcher rd = request.getRequestDispatcher("/view/hotel/rooms.jsp");
-        rd.forward(request, response);                 // chuyển tiếp tới view
-    }
 
-    // Nếu sau này cần đặt phòng, lọc phòng, … bạn có thể override doPost/doPut
+        RequestDispatcher rd = request.getRequestDispatcher("/view/hotel/rooms.jsp");
+        rd.forward(request, response);
+    }
 }

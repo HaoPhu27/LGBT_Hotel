@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<script src="https://cdn.tailwindcss.com"></script>
 <%@ page import="java.util.List, model.Service" %>
-<%@ include file="../hotel/header.jsp" %>
+
 <%
     List<Service> services = (List<Service>) request.getAttribute("services");
     String error = (String) request.getAttribute("error");
@@ -12,13 +13,13 @@
   <meta charset="UTF-8">
   <title>Danh sách dịch vụ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <%@ include file="../hotel/header.jsp" %>
 </head>
 
 <body class="bg-gray-900 pt-24 min-h-screen font-sans text-gray-100">
-  <div class="max-w-7xl mx-auto px-4">
+  <div class="max-w-7xl mx-auto px-4 my-4">
     <h2 class="text-4xl font-extrabold text-center mb-10 text-indigo-300 tracking-tight">
-      🛎️ Các dịch vụ tại Royal Paradise
+      🛎️ Các dịch vụ tại LGBT Hotel
     </h2>
 
     <% if (error != null) { %>
@@ -44,11 +45,6 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 text-white text-center py-8 mt-16">
-    <div class="max-w-screen-xl mx-auto px-4">
-      <p>&copy; 2025 Royal Paradise Hotel. Tất cả quyền được bảo lưu.</p>
-      <p>📞 Hotline: 1900-1234 | 📧 Email: info@royalparadise.com</p>
-    </div>
-  </footer>
+   <%@ include file="footer.jsp" %>
 </body>
 </html>

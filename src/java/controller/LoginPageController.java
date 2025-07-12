@@ -21,13 +21,11 @@ public class LoginPageController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        request.setCharacterEncoding("UTF-8");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-
         UserDAO dao = new UserDAO();
         Users user = dao.login(email, password);
-
         if (user != null) {
             // Đăng nhập thành công – lưu thông tin vào session
             HttpSession session = request.getSession(true);
@@ -38,7 +36,7 @@ public class LoginPageController extends HttpServlet {
             // Chuyển hướng theo vai trò
             switch (user.getRole()) {
                 case "admin":
-                    response.sendRedirect(request.getContextPath() + "/view/admin/dashboard.jsp");
+                    response.sendRedirect(request.getContextPath() + "/DashboardController");
                     break;
                 case "staff":
                     response.sendRedirect(request.getContextPath() + "/staff/home");

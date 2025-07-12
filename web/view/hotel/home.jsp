@@ -4,10 +4,10 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Royal Paradise Hotel - Khách sạn sang trọng</title>
+        <title>LGBT Hotel – Where Lifestyle Meets Beauty</title>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
-   <body class="bg-gray-900 pt-8 min-h-screen font-sans text-gray-100">
+    <body class="bg-gray-900 pt-8 min-h-screen font-sans text-gray-100">
 
         <%@ include file="header.jsp" %>
         <%
@@ -21,9 +21,24 @@
                  class="h-[70vh] bg-cover bg-center flex items-center justify-center text-white text-center mt-10"
                  style='background-image: url("${pageContext.request.contextPath}/assets/images/home-resort-hero-bg.jpg")'>
             <div>
-                <h1 class="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Chào mừng đến Royal Paradise</h1>
-                <p class="text-lg max-w-xl mx-auto mb-6">Trải nghiệm nghỉ dưỡng sang trọng với dịch vụ 5 sao và không gian tuyệt vời nhất</p>
-                <a href="#rooms" class="inline-block px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition">Khám phá ngay</a>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Chào mừng đến LGBT Hotel</h1>
+                <p class="text-lg max-w-xl mx-auto mb-6">Trải nghiệm phong cách sống tự do, thanh lịch và trọn vẹn cái đẹp trong từng chuyến đi</p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <!-- Nút Khám phá -->
+                    <a href="#rooms"
+                       class="inline-block px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition">
+                        Khám phá ngay
+                    </a>
+
+                    <!-- Nút Phòng đã đặt (chỉ hiển thị khi có user) -->
+                    <c:if test="${not empty user}">
+                        <a href="${pageContext.request.contextPath}/my-bookings"
+                           class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-500 transition">
+                            Xem phòng đã đặt
+                        </a>
+                    </c:if>
+                </div>
             </div>
         </section>
 
@@ -197,12 +212,7 @@
 
         </script>
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white text-center py-8">
-            <div class="max-w-screen-xl mx-auto px-4">
-                <p>&copy; 2025 Royal Paradise Hotel. Tất cả quyền được bảo lưu.</p>
-                <p>📞 Hotline: 1900-1234 | 📧 Email: info@royalparadise.com</p>
-            </div>
-        </footer>
+        <%@ include file="footer.jsp" %>
     </body>
 </html>
 

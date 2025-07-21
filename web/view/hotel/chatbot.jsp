@@ -1,50 +1,88 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
-        <title>💬 Chatbot Lễ Tân Khách Sạn</title>
+        <title>🤖 Chatbot Lễ Tân</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#3b82f6',
+                            user: '#22c55e',
+                            bot: '#60a5fa'
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            .typing-dots span {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                margin: 0 2px;
+                background: #60a5fa;
+                border-radius: 9999px;
+                opacity: 0.6;
+                animation: typingBlink 1s infinite alternate;
+            }
+            .typing-dots span:nth-child(2) {
+                animation-delay: .2s;
+            }
+            .typing-dots span:nth-child(3) {
+                animation-delay: .4s;
+            }
+
+            @keyframes typingBlink {
+                to {
+                    opacity: 1;
+                }
+            }
+        </style>
     </head>
-    <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+    <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-3xl space-y-4">
+            <h1 class="text-center text-2xl font-bold text-primary">💬 Chat với lễ tân khách sạn</h1>
 
-        <div class="bg-white rounded-2xl shadow-lg w-full max-w-3xl p-6 flex flex-col space-y-4">
-            <h1 class="text-2xl font-bold text-center text-blue-600">🤖 Chat với lễ tân khách sạn</h1>
+            <!-- Chat Box -->
+            <div id="chat-box" class="bg-gray-800 rounded-xl shadow p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                <!-- Welcome -->
+                <div class="flex items-start space-x-2">
+                    <div class="bg-bot text-gray-900 rounded-xl p-3 w-fit">
+                        <div class="font-semibold text-bot mb-1">🤖 Lễ tân</div>
+                        <div>Xin chào! Tôi có thể giúp gì cho kỳ nghỉ của bạn hôm nay?</div>
+                    </div>
+                </div>
 
-            <!-- Vùng hiển thị chat -->
-            <div id="chat-box" class="flex flex-col space-y-4 max-h-[60vh] overflow-y-auto pr-2">
-                <c:forEach var="entry" items="${history}">
-                    <div class="self-end max-w-[80%]">
-                        <div class="bg-green-100 text-gray-800 p-3 rounded-xl whitespace-pre-line">
-                            🧑 <span class="font-semibold">Bạn:</span><br/>${entry[0]}
-                        </div>
+                <!-- Typing -->
+                <div id="typingIndicator" class="flex items-start space-x-2 hidden">
+                    <div class="bg-blue-200 text-gray-900 rounded-xl p-3 w-fit">
+                        <div class="font-semibold text-blue-600 mb-1">🤖 Lễ tân</div>
+                        <div class="typing-dots"><span></span><span></span><span></span></div>
                     </div>
-                    <div class="self-start max-w-[80%]">
-                        <div class="bg-blue-100 text-gray-800 p-3 rounded-xl whitespace-pre-line">
-                            🤖 <span class="font-semibold">Lễ tân:</span><br/>${entry[1]}
-                        </div>
-                    </div>
-                </c:forEach>
+                </div>
             </div>
 
-            <!-- Form gửi -->
-            <form id="chat-form" class="flex flex-col space-y-2">
-                <textarea id="message-input" name="message" rows="3" required
-                          class="resize-none p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:border-blue-400"
-                          placeholder="Nhập câu hỏi của bạn..."></textarea>
+            <!-- Input -->
+            <form id="chat-form" class="flex items-center space-x-2">
+                <input id="message-input" name="message" required
+                       class="flex-1 p-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring focus:border-primary"
+                       placeholder="Nhập câu hỏi của bạn..." />
                 <button type="submit"
-                        class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-xl hover:bg-blue-700 transition">
+                        class="bg-primary text-white px-5 py-3 rounded-xl hover:bg-blue-700 transition">
                     Gửi
                 </button>
             </form>
         </div>
 
-        <!-- Script xử lý AJAX -->
         <script>
             const form = document.getElementById("chat-form");
             const input = document.getElementById("message-input");
             const chatBox = document.getElementById("chat-box");
+            const typing = document.getElementById("typingIndicator");
 
             form.addEventListener("submit", function (e) {
                 e.preventDefault();
@@ -52,73 +90,62 @@
                 if (!userMessage)
                     return;
 
-                // Thêm câu hỏi người dùng
-                const userBubble = document.createElement("div");
-                userBubble.className = "self-end max-w-[80%]";
-                userBubble.innerHTML = `
-            <div class="bg-green-100 text-gray-800 p-3 rounded-xl whitespace-pre-line">
-                🧑 <span class="font-semibold">Bạn:</span><br/>${userMessage}
-            </div>`;
-                chatBox.appendChild(userBubble);
-                chatBox.scrollTop = chatBox.scrollHeight;
+                appendMessage(userMessage, 'user');
+                input.value = '';
+                showTyping();
 
-                input.value = ""; // xóa ô nhập sau khi thêm vào giao diện
-
-                // Thêm hiệu ứng đang gõ
-                const loadingBubble = document.createElement("div");
-                loadingBubble.id = "loading";
-                loadingBubble.className = "self-start max-w-[80%]";
-                loadingBubble.innerHTML = `
-            <div class="bg-blue-100 text-gray-800 p-3 rounded-xl animate-pulse">
-                🤖 <span class="font-semibold">Lễ tân:</span><br/>Đang soạn câu trả lời...
-            </div>`;
-                chatBox.appendChild(loadingBubble);
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-                // Gửi tới servlet
                 fetch("chatbot", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
                     body: "message=" + encodeURIComponent(userMessage)
                 })
-                        .then(response => response.text())
-                        .then(botReply => {
-                            document.getElementById("loading").remove();
-
-                            const botBubble = document.createElement("div");
-                            botBubble.className = "self-start max-w-[80%]";
-                            const botMessage = document.createElement("div");
-                            botMessage.className = "bg-blue-100 text-gray-800 p-3 rounded-xl whitespace-pre-line";
-                            botMessage.innerHTML = `🤖 <span class="font-semibold">Lễ tân:</span><br/><span id="typing-text"></span>`;
-                            botBubble.appendChild(botMessage);
-                            chatBox.appendChild(botBubble);
-
-                            const typingText = botMessage.querySelector("#typing-text");
-                            let index = 0;
-                            const typeInterval = setInterval(() => {
-                                if (index < botReply.length) {
-                                    typingText.textContent += botReply.charAt(index);
-                                    index++;
-                                    chatBox.scrollTop = chatBox.scrollHeight;
-                                } else {
-                                    clearInterval(typeInterval);
-                                }
-                            }, 30);
+                        .then(res => res.json())
+                        .then(data => {
+                            hideTyping();
+                            appendMessage(data.response.replace(/\n/g, "<br>"), 'bot');
                         })
-                        .catch(err => {
-                            console.error("Lỗi:", err);
-                            document.getElementById("loading").remove();
-                            const errorBubble = document.createElement("div");
-                            errorBubble.className = "self-start max-w-[80%]";
-                            errorBubble.innerHTML = `
-                    <div class="bg-red-100 text-red-800 p-3 rounded-xl">
-                        🤖 <span class="font-semibold">Lễ tân:</span><br/>Có lỗi xảy ra, vui lòng thử lại.
-                    </div>`;
-                            chatBox.appendChild(errorBubble);
+                        .catch(() => {
+                            hideTyping();
+                            appendMessage("❌ Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.", 'bot');
                         });
             });
+
+            function appendMessage(text, sender) {
+                const bubble = document.createElement("div");
+                bubble.className = `flex items-start space-x-2 ${'$'}{sender === 'user' ? 'justify-end' : ''}`;
+
+                const inner = document.createElement("div");
+                inner.className = `rounded-xl p-3 w-fit whitespace-pre-line ${'$'}{sender === 'user'
+                ? 'bg-green-100 text-gray-900 self-end'
+                : 'bg-blue-100 text-gray-900'}`;
+
+                const name = document.createElement("div");
+                name.className = `font-semibold mb-1 ${'$'}{sender === 'user' ? 'text-green-400' : 'text-blue-400'}`;
+                name.textContent = sender === 'user' ? '🧑 Bạn' : '🤖 Lễ tân';
+
+                const content = document.createElement("div");
+                if (sender === 'bot') {
+                    content.innerHTML = text;
+                } else {
+                    content.textContent = text;
+                }
+
+                inner.appendChild(name);
+                inner.appendChild(content);
+                bubble.appendChild(inner);
+
+                chatBox.insertBefore(bubble, typing);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            function showTyping() {
+                typing.classList.remove("hidden");
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            function hideTyping() {
+                typing.classList.add("hidden");
+            }
         </script>
     </body>
 </html>

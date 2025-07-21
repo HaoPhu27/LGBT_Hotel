@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,17 +16,8 @@ public class ChatbotController extends HttpServlet {
     private final ChatbotService chatService = new ChatbotService();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        @SuppressWarnings("unchecked")
-        List<String[]> history = (List<String[]>) session.getAttribute("history");
-
-        if (history == null) {
-            history = new ArrayList<>();
-            session.setAttribute("history", history);
-        }
-
-        request.setAttribute("history", history);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         request.getRequestDispatcher("/view/hotel/chatbot.jsp").forward(request, response);
     }
 
@@ -34,23 +26,25 @@ public class ChatbotController extends HttpServlet {
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/plain");
+        response.setContentType("application/json;charset=UTF-8");
 
         String userMessage = request.getParameter("message");
-        String botReply = chatService.chatWithGemini(userMessage);
+        String botReply = chatService.chatWithGemini(userMessage != null ? userMessage : "");
 
-        HttpSession session = request.getSession();
-        @SuppressWarnings("unchecked")
-        List<String[]> history = (List<String[]>) session.getAttribute("history");
-
-        if (history == null) {
-            history = new ArrayList<>();
+        // Gửi về JSON
+        String json = "{\"response\": " + escapeJson(botReply) + "}";
+        try (PrintWriter out = response.getWriter()) {
+            out.print(json);
         }
+    }
 
-        history.add(new String[]{userMessage, botReply});
-        session.setAttribute("history", history);
-
-        response.getWriter().write(botReply);
+    private String escapeJson(String s) {
+        if (s == null) {
+            return "\"\"";
+        }
+        return "\"" + s.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "") + "\"";
     }
 }

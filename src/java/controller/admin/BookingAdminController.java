@@ -5,6 +5,7 @@
 package controller.admin;
 
 import dao.BookingsDAO;
+import dao.PaymentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -43,14 +44,6 @@ public class BookingAdminController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-            String status = request.getParameter("status");
-
-            bookingsDAO.updateBookingStatus(bookingId, status);
-            response.sendRedirect(request.getContextPath() + "/bookingadmin");
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+       
     }
 }

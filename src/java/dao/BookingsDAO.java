@@ -5,7 +5,9 @@ import model.Bookings;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BookingsDAO extends DBContext {
 
@@ -134,12 +136,35 @@ public class BookingsDAO extends DBContext {
         return false;
     }
 
-    public void updateBookingStatus(int bookingId, String newStatus) throws SQLException {
-        String sql = "UPDATE Bookings SET status = ? WHERE booking_id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, newStatus);
-            ps.setInt(2, bookingId);
-            ps.executeUpdate();
+    public void updateBookingStatus(int bookingId, String status, String paymentStatus) {
+        String updateBookingSql = "UPDATE Bookings SET status = ? WHERE booking_id = ?";
+        String updatePaymentSql = "UPDATE Payments SET status = ? WHERE booking_id = ?";
+
+        try {
+            connection.setAutoCommit(false); // Bắt đầu transaction
+
+            try (PreparedStatement psBooking = connection.prepareStatement(updateBookingSql); PreparedStatement psPayment = connection.prepareStatement(updatePaymentSql)) {
+
+                // Cập nhật status của Booking
+                psBooking.setString(1, status);
+                psBooking.setInt(2, bookingId);
+                psBooking.executeUpdate();
+
+                // Cập nhật payment status trong bảng Payments
+                psPayment.setString(1, paymentStatus);
+                psPayment.setInt(2, bookingId);
+                psPayment.executeUpdate();
+
+                connection.commit(); // Nếu thành công thì commit
+            } catch (Exception e) {
+                connection.rollback(); // Nếu lỗi thì rollback
+                e.printStackTrace();
+            } finally {
+                connection.setAutoCommit(true);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -164,9 +189,9 @@ public class BookingsDAO extends DBContext {
         return dates;
     }
 
-public List<Bookings> getAllBookings() {
-    List<Bookings> list = new ArrayList<>();
-    String sql = """
+    public List<Bookings> getAllBookings() {
+        List<Bookings> list = new ArrayList<>();
+        String sql = """
         SELECT b.*, r.room_number, u.name AS customer_name,
                p.amount, p.status AS payment_status
         FROM Bookings b
@@ -176,32 +201,107 @@ public List<Bookings> getAllBookings() {
         ORDER BY b.created_at DESC
     """;
 
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            Bookings b = new Bookings();
-            b.setBookingId(rs.getInt("booking_id"));
-            b.setRoomId(rs.getInt("room_id"));
-            b.setRoomNumber(rs.getString("room_number"));
-            b.setCustomerId(rs.getInt("customer_id"));
-            b.setCheckIn(rs.getDate("check_in"));
-            b.setCheckOut(rs.getDate("check_out"));
-            b.setStatus(rs.getString("status"));
-            b.setCreatedAt(rs.getTimestamp("created_at"));
-            b.setCustomerName(rs.getString("customer_name"));
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Bookings b = new Bookings();
+                b.setBookingId(rs.getInt("booking_id"));
+                b.setRoomId(rs.getInt("room_id"));
+                b.setRoomNumber(rs.getString("room_number"));
+                b.setCustomerId(rs.getInt("customer_id"));
+                b.setCheckIn(rs.getDate("check_in"));
+                b.setCheckOut(rs.getDate("check_out"));
+                b.setStatus(rs.getString("status"));
+                b.setCreatedAt(rs.getTimestamp("created_at"));
+                b.setCustomerName(rs.getString("customer_name"));
 
-            BigDecimal amount = rs.getBigDecimal("amount");
-            if (amount != null) b.setTotalAmount(amount);
+                BigDecimal amount = rs.getBigDecimal("amount");
+                if (amount != null) {
+                    b.setTotalAmount(amount);
+                }
 
-            String paymentStatus = rs.getString("payment_status");
-            b.setPaymentStatus(paymentStatus != null ? paymentStatus : "Chưa thanh toán");
+                String paymentStatus = rs.getString("payment_status");
+                b.setPaymentStatus(paymentStatus != null ? paymentStatus : "Chưa thanh toán");
 
-            list.add(b);
+                list.add(b);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+
+        return list;
     }
 
-    return list;
-}
+    public Bookings getBookingAdminbyId(int id) {
+        String sql = """
+        SELECT b.*, r.room_number, u.name AS customer_name
+        FROM Bookings b
+        JOIN Rooms r ON b.room_id = r.room_id
+        JOIN Users u ON b.customer_id = u.user_id
+        WHERE b.booking_id = ?
+    """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Bookings b = new Bookings();
+                b.setBookingId(rs.getInt("booking_id"));
+                b.setCustomerId(rs.getInt("customer_id"));
+                b.setRoomId(rs.getInt("room_id"));
+                b.setRoomNumber(rs.getString("room_number"));
+                b.setCustomerName(rs.getString("customer_name"));
+                b.setCheckIn(rs.getDate("check_in"));
+                b.setCheckOut(rs.getDate("check_out"));
+                b.setStatus(rs.getString("status"));
+                b.setCreatedAt(rs.getTimestamp("created_at"));
+                return b;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getCustomerEmailByBookingId(int id) {
+        String sql = """
+        SELECT u.email
+        FROM Bookings b
+        JOIN Users u ON b.customer_id = u.user_id
+        WHERE b.booking_id = ?
+    """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("email");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public List<Map<String, Object>> getServiceDetailsForBooking(int bookingId) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        String sql = """
+        SELECT s.name, s.price, bs.quantity
+        FROM BookingServices bs
+        JOIN Services s ON bs.service_id = s.service_id
+        WHERE bs.booking_id = ?
+    """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, bookingId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("name", rs.getString("name"));
+                map.put("price", rs.getBigDecimal("price"));
+                map.put("quantity", rs.getInt("quantity"));
+                list.add(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

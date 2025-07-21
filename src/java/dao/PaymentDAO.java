@@ -1,6 +1,5 @@
 package dao;
 
-
 import java.math.BigDecimal;
 import model.Payment;
 import java.sql.*;
@@ -9,7 +8,6 @@ import java.sql.*;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author admin
@@ -36,7 +34,8 @@ public class PaymentDAO extends DBContext {
         }
         return null;
     }
-     public void insertPayment(Payment payment) throws SQLException {
+
+    public void insertPayment(Payment payment) throws SQLException {
         String sql = "INSERT INTO Payments (booking_id, amount, method, paid_at, status) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, payment.getBookingId());
@@ -47,15 +46,15 @@ public class PaymentDAO extends DBContext {
             ps.executeUpdate();
         }
     }
-     public BigDecimal calculateTotalRevenue() throws SQLException {
-    String sql = "SELECT SUM(amount) AS total FROM Payments WHERE status = 'paid'";
-    try (PreparedStatement ps = connection.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getBigDecimal("total") != null ? rs.getBigDecimal("total") : BigDecimal.ZERO;
+    public BigDecimal calculateTotalRevenue() throws SQLException {
+        String sql = "SELECT SUM(amount) AS total FROM Payments WHERE status = 'paid'";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getBigDecimal("total") != null ? rs.getBigDecimal("total") : BigDecimal.ZERO;
+            }
         }
+        return BigDecimal.ZERO;
     }
-    return BigDecimal.ZERO;
-}
 }

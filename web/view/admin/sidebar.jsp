@@ -75,9 +75,6 @@
             <a href="${pageContext.request.contextPath}/bookingadmin" class="sidebar-link">
                 <i class="fas fa-calendar-check"></i> Đặt Phòng
             </a>
-            <a href="${pageContext.request.contextPath}/revenue" class="sidebar-link">
-                <i class="fas fa-chart-line"></i> Doanh Thu
-            </a>
         </nav>
 
         <div class="sidebar-logout">

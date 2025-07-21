@@ -49,8 +49,7 @@
                     <option value="">-- Trạng thái --</option>
                     <option value="" ${empty status ? 'selected' : ''}>Tất cả</option>
                     <option value="available" ${status == 'available' ? 'selected' : ''}>Available</option>
-                    <option value="booked" ${status == 'booked' ? 'selected' : ''}>Booked</option>
-                    <option value="occupied" ${status == 'occupied' ? 'selected' : ''}>Occupied</option>
+                    <option value="repaired" ${status == 'repaired' ? 'selected' : ''}>Under renovation</option>
                 </select>
 
                 <select name="type" class="border px-3 py-2 rounded text-black">
@@ -91,7 +90,7 @@
 
                                 <!-- Ảnh -->
                                 <c:if test="${not empty room.imageUrl}">
-                                    <img src="${pageContext.request.contextPath}/assets/${room.imageUrl}" alt="Phòng ${room.roomNumber}"
+                                    <img src="${pageContext.request.contextPath}/assets/images/${room.imageUrl}" alt="Phòng ${room.roomNumber}"
                                          class="h-48 w-full object-cover opacity-90"/>
                                 </c:if>
 
@@ -110,10 +109,11 @@
                                         </p>
 
                                         <!-- Màu trạng thái -->
-                                        <c:set var="isAvailable" value="${fn:toLowerCase(room.status) eq 'available'}"/>
+                                        <c:set var="isAvailable"
+                                               value="${fn:toLowerCase(room.status) ne 'repaired' and fn:toLowerCase(room.status) ne 'unavailable'}" />
                                         <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full
                                               ${isAvailable ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'}">
-                                            ${room.status}
+                                            ${fn:toLowerCase(room.status) eq 'booked' ? 'available' : room.status}
                                         </span>
                                     </div>
 
@@ -145,6 +145,26 @@
                 </c:choose>
 
             </div>
+            <c:if test="${totalPages > 1}">
+                <div class="flex justify-center mt-10 space-x-2">
+                    <c:forEach var="i" begin="1" end="${totalPages}">
+                        <form method="get" action="${pageContext.request.contextPath}/rooms">
+                            <input type="hidden" name="search" value="${param.search}" />
+                            <input type="hidden" name="minPrice" value="${param.minPrice}" />
+                            <input type="hidden" name="maxPrice" value="${param.maxPrice}" />
+                            <input type="hidden" name="status" value="${param.status}" />
+                            <input type="hidden" name="type" value="${param.type}" />
+                            <input type="hidden" name="sort" value="${param.sort}" />
+                            <input type="hidden" name="page" value="${i}" />
+
+                            <button type="submit"
+                                    class="px-3 py-1 rounded ${i == currentPage ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-800'}">
+                                ${i}
+                            </button>
+                        </form>
+                    </c:forEach>
+                </div>
+            </c:if>
         </div>
         <%@ include file="footer.jsp" %>
         <div id="bookingModal"
@@ -197,19 +217,7 @@
                             </c:forEach>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tình trạng thanh toán:</label>
-                        <div class="flex gap-6">
-                            <label class="text-sm text-gray-700">
-                                <input type="radio" name="paymentStatus" value="paid" required class="mr-2"/>
-                                Đã thanh toán
-                            </label>
-                            <label class="text-sm text-gray-700">
-                                <input type="radio" name="paymentStatus" value="unpaid" required class="mr-2"/>
-                                Chưa thanh toán
-                            </label>
-                        </div>
-                    </div>
+                    <input type="hidden" name="paymentStatus" value="unpaid" />
 
                     <!-- Giá -->
                     <div class="bg-gray-100 p-4 rounded-lg">

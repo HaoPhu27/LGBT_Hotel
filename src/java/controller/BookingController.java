@@ -106,7 +106,7 @@ public class BookingController extends HttpServlet {
             BookingsDAO bookingsDAO = new BookingsDAO();
             RoomDAO roomDAO = new RoomDAO();
             ServiceDAO serviceDAO = new ServiceDAO(); // ✅ Thêm dòng này
-
+            
             Rooms room = roomDAO.getRoomById(roomId);
             BigDecimal roomPrice = room.getPrice();
 
@@ -123,11 +123,11 @@ public class BookingController extends HttpServlet {
             booking.setRoomId(roomId);
             booking.setCheckIn(checkIn);
             booking.setCheckOut(checkOut);
-            booking.setStatus("Booked");
+            booking.setStatus("booked");
             booking.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
             int bookingId = bookingsDAO.createBookingReturnId(booking);
-
+            roomDAO.updateRoomStatus(roomId, "booked");
             // Dịch vụ thêm
             String[] serviceIds = request.getParameterValues("serviceIds");
             if (serviceIds != null && bookingId > 0) {

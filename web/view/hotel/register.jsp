@@ -104,6 +104,27 @@
                         Đăng ký
                     </button>
                 </form>
+                <% Boolean emailValid = (Boolean) request.getAttribute("emailValid"); %>
+                <% Boolean passwordValid = (Boolean) request.getAttribute("passwordValid"); %>
+                <% Boolean emailExist = (Boolean) request.getAttribute("emailExist"); %>
+
+                <% if (emailValid != null && !emailValid) { %>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded text-sm mb-2">
+                    Email không hợp lệ.
+                </div>
+                <% } %>
+
+                <% if (passwordValid != null && !passwordValid) { %>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded text-sm mb-2">
+                    Mật khẩu phải dài 8–14 ký tự, có chữ hoa, số và ký tự đặc biệt.
+                </div>
+                <% } %>
+
+                <% if (emailExist != null && emailExist) { %>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded text-sm mb-2">
+                    Email đã tồn tại. Vui lòng dùng email khác.
+                </div>
+                <% } %>
 
                 <p class="mt-4 text-sm text-center text-gray-600">
                     Đã có tài khoản?

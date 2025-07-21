@@ -14,6 +14,22 @@
         <servlet-name>RevenueController</servlet-name>
         <servlet-class>controller.admin.RevenueController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BookingEditController</servlet-name>
+        <servlet-class>controller.admin.BookingEditController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RoomDeleteServlet</servlet-name>
+        <servlet-class>controller.admin.RoomDeleteServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RoomEditServlet</servlet-name>
+        <servlet-class>controller.admin.RoomEditServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>createRoomController</servlet-name>
+        <servlet-class>controller.admin.createRoomController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeJsp</servlet-name>
         <!-- URL rút gọn hiển thị cho người dùng -->
@@ -28,7 +44,40 @@
         <servlet-name>RevenueController</servlet-name>
         <url-pattern>/revenue</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BookingEditController</servlet-name>
+        <url-pattern>/bookingedit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoomDeleteServlet</servlet-name>
+        <url-pattern>/deleteroom</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoomEditServlet</servlet-name>
+        <url-pattern>/roomedit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>createRoomController</servlet-name>
+        <url-pattern>/createroom</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
+    <filter>
+        <filter-name>RegisterValidationFilter</filter-name>
+        <filter-class>Filter.RegisterValidationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RegisterValidationFilter</filter-name>
+        <url-pattern>/register</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>Filter.LoginFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>/login</url-pattern>
+    </filter-mapping>
 </web-app>

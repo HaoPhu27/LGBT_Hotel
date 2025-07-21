@@ -13,7 +13,13 @@
             .filter(r -> "booked".equals(((Rooms) r).getStatus()))
             .count();
     }
-    int emptyRooms = totalRooms - (int) bookedRooms;
+    long repairRooms = 0;
+     if (rooms != null) {
+        repairRooms = rooms.stream()
+            .filter(r -> "repaired".equals(((Rooms) r).getStatus()))
+            .count();
+    }
+    int emptyRooms = totalRooms - (int) bookedRooms - (int)repairRooms;
 %>
 
 <!DOCTYPE html>
@@ -117,10 +123,10 @@
         new Chart(document.getElementById('roomChart'), {
             type: 'doughnut',
             data: {
-                labels: ['Đã Đặt', 'Trống'],
+                labels: ['Đã Đặt', 'Trống', 'Đang sửa chữa'],
                 datasets: [{
-                    data: [<%= bookedRooms %>, <%= emptyRooms %>],
-                    backgroundColor: ['#ef4444', '#10b981'],
+                    data: [<%= bookedRooms %>, <%= emptyRooms %>,<%= repairRooms %>],
+                    backgroundColor: ['#ef4444', '#10b981','#46A5DC'],
                     borderWidth: 0
                 }]
             },

@@ -2,81 +2,63 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+
 package controller.admin;
 
-import dao.BookingsDAO;
-import dao.PaymentDAO;
+import dao.RoomDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
 
 /**
  *
  * @author admin
  */
-public class RevenueController extends HttpServlet {
-
-    private PaymentDAO paymentsDAO;
-
-    @Override
-    public void init() {
-        paymentsDAO = new PaymentDAO();
-    }
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
+public class RoomDeleteServlet extends HttpServlet {
+   private RoomDAO roomDAO = new RoomDAO();
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RevenueController</title>");
+            out.println("<title>Servlet RoomDeleteServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RevenueController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet RoomDeleteServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     @Override
-       protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            BigDecimal totalRevenue = paymentsDAO.calculateTotalRevenue();
-            request.setAttribute("totalRevenue", totalRevenue);
-            request.getRequestDispatcher("/view/admin/revenue.jsp").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi tính doanh thu");
-        }
-    }
-    /**
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        processRequest(request, response);
+    } 
+
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -85,12 +67,20 @@ public class RevenueController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       doGet(request, response); // forward xử lý giống GET
+        int roomId = Integer.parseInt(request.getParameter("roomId"));
+
+        boolean success = roomDAO.deleteRoomById(roomId);
+
+        // Tuỳ vào bạn muốn xử lý sao khi xóa, ví dụ:
+        if (success) {
+             response.sendRedirect(request.getContextPath() + "/roomadmin");
+        } else {
+             response.sendRedirect(request.getContextPath() + "/roomadmin");
+        }
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override

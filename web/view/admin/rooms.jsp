@@ -15,7 +15,7 @@
 <div class="flex min-h-screen bg-gray-100">
 
     <jsp:include page="sidebar.jsp" />
-    
+
     <!-- Content -->
     <main class="flex-1 ml-64 p-8">
         <section id="rooms-section">
@@ -23,6 +23,25 @@
                 <h1 class="text-3xl font-bold text-gray-800 flex items-center">
                     <i class="fas fa-bed mr-3 text-blue-500"></i>Quản lý Phòng
                 </h1>
+                <c:if test="${not empty sessionScope.error}">
+                    <div class="mt-4 w-full max-w-2xl">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Lỗi!</strong>
+                            <span class="block sm:inline">${sessionScope.error}</span>
+                        </div>
+                    </div>
+                    <c:remove var="error" scope="session" />
+                </c:if>
+
+                <c:if test="${not empty sessionScope.message}">
+                    <div class="mt-4 w-full max-w-2xl">
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Thành công!</strong>
+                            <span class="block sm:inline">${sessionScope.message}</span>
+                        </div>
+                    </div>
+                    <c:remove var="message" scope="session" />
+                </c:if>
                 <a href="${pageContext.request.contextPath}/createroom"
                    class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition">
                     <i class="fas fa-plus mr-2"></i>Thêm Phòng

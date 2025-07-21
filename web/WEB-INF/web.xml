@@ -30,6 +30,10 @@
         <servlet-name>createRoomController</servlet-name>
         <servlet-class>controller.admin.createRoomController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ChatbotController</servlet-name>
+        <servlet-class>controller.ChatbotController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeJsp</servlet-name>
         <!-- URL rút gọn hiển thị cho người dùng -->
@@ -49,16 +53,16 @@
         <url-pattern>/bookingedit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>RoomDeleteServlet</servlet-name>
-        <url-pattern>/deleteroom</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>RoomEditServlet</servlet-name>
         <url-pattern>/roomedit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>createRoomController</servlet-name>
         <url-pattern>/createroom</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChatbotController</servlet-name>
+        <url-pattern>/chatbot</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
@@ -75,9 +79,16 @@
         <filter-name>LoginFilter</filter-name>
         <filter-class>Filter.LoginFilter</filter-class>
     </filter>
-
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
         <url-pattern>/login</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>RoomDeleteFilter</filter-name>
+        <filter-class>Filter.RoomDeleteFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RoomDeleteFilter</filter-name>
+        <url-pattern>/deleteroom</url-pattern>
     </filter-mapping>
 </web-app>

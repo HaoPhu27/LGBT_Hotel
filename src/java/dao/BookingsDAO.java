@@ -304,4 +304,23 @@ public class BookingsDAO extends DBContext {
         }
         return list;
     }
+
+    public boolean isRoomCurrentlyBooked(int roomId) {
+        String sql = """
+        SELECT 1 FROM Bookings 
+        WHERE room_id = ? 
+          AND status <> 'cancelled'
+          AND check_out >= GETDATE()
+    """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, roomId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // Nếu có dòng nào -> phòng đang còn được đặt
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }

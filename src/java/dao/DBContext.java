@@ -1,37 +1,31 @@
 package dao;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author admin
- */
 public class DBContext {
-    Connection connection;
-    public DBContext(){
-        try{
+    protected Connection connection;
+
+    public DBContext() {
+        try {
             String user = "sa";
             String pass = "deptrai0315";
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=LGBTHotel";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=LGBTHotel;encrypt=false;trustServerCertificate=true";
+
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            connection = DriverManager.getConnection(url,user,pass);
-            
-        }catch(ClassNotFoundException | SQLException ex){
-            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE,null,ex);
+            connection = DriverManager.getConnection(url, user, pass);
+
+            System.out.println("✅ Kết nối DB thành công: " + (connection != null));
+        } catch (ClassNotFoundException e) {
+            System.out.println("❌ Không tìm thấy driver JDBC SQLServer");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("❌ Lỗi SQL khi kết nối DB");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("❌ Lỗi khác khi kết nối DB");
+            e.printStackTrace();
         }
-        
     }
-   
 }

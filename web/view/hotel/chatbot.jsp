@@ -17,8 +17,7 @@
                         }
                     }
                 }
-            }
-            
+            }          
         </script>
         <style>
             .typing-dots span {

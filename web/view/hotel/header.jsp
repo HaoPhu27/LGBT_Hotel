@@ -13,8 +13,8 @@
         <li><a href="<%= request.getContextPath() %>/home" class="hover:bg-white/20 rounded-full px-4 py-2">Trang chủ</a></li>
         <li><a href="<%= request.getContextPath() %>/rooms" class="hover:bg-white/20 rounded-full px-4 py-2">Phòng</a></li>
         <li><a href="<%= request.getContextPath() %>/services" class="hover:bg-white/20 rounded-full px-4 py-2">Dịch vụ</a></li>
-        <li><a href="#about" class="hover:bg-white/20 rounded-full px-4 py-2">Giới thiệu</a></li>
-        <li><a href="#contact" class="hover:bg-white/20 rounded-full px-4 py-2">Liên hệ</a></li>
+        <li><a href="<%= request.getContextPath() %>/chatbot" class="hover:bg-white/20 rounded-full px-4 py-2">Chatbot</a></li>
+        <li><a href="<%= request.getContextPath() %>/view/hotel/contact.jsp" class="hover:bg-white/20 rounded-full px-4 py-2">Liên hệ</a></li>
       </ul>
       <div class="flex gap-4 items-center">
         <% if (username == null) { %>

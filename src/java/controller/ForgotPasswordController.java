@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
 import model.Users;
-import service.MailService;
+import Service.MailService;
 
 /**
  *
@@ -23,9 +23,10 @@ import service.MailService;
  */
 @WebServlet("/forgot-password")
 public class ForgotPasswordController extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setCharacterEncoding("UTF-8");
         String email = request.getParameter("email");
         UserDAO dao = new UserDAO();
         Users user = dao.getUserByEmail(email);
@@ -38,18 +39,21 @@ public class ForgotPasswordController extends HttpServlet {
                 session.setAttribute("resetOtp", otp);
                 session.setAttribute("resetUserId", user.getUserId());
 
-                String content = "<p>Mã xác nhận khôi phục mật khẩu của bạn là:</p>" +
-                                 "<h2 style='color:#4f46e5;'>" + otp + "</h2>" +
-                                 "<p>Vui lòng nhập mã này để tiếp tục.</p>";
+                String content = "<p>Mã xác nhận khôi phục mật khẩu của bạn là:</p>"
+                        + "<h2 style='color:#4f46e5;'>" + otp + "</h2>"
+                        + "<p>Vui lòng nhập mã này để tiếp tục.</p>";
                 MailService.send(email, "Mã xác nhận đặt lại mật khẩu", content);
 
                 response.setContentType("application/json");
                 response.getWriter().write("{\"success\": true}");
+                return;
 
             } catch (Exception e) {
                 response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().write("{\"error\": \"Gửi email thất bại.\"}");
+                return;
             }
 
         } else {
@@ -57,7 +61,7 @@ public class ForgotPasswordController extends HttpServlet {
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.getWriter().write("{\"error\": \"Email không tồn tại.\"}");
+            return;
         }
     }
 }
-

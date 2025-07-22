@@ -3,7 +3,7 @@
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
-        
+
         <title>🤖 Chatbot Lễ Tân</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
@@ -18,6 +18,7 @@
                     }
                 }
             }
+            
         </script>
         <style>
             .typing-dots span {
@@ -45,7 +46,7 @@
         </style>
     </head>
     <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
-         <%@ include file="header.jsp" %>
+        <%@ include file="header.jsp" %>
         <div class="w-full max-w-3xl space-y-4">
             <h1 class="text-center text-2xl font-bold text-primary">💬 Chat với lễ tân khách sạn</h1>
 

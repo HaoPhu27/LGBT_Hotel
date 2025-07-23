@@ -16,7 +16,6 @@
                     <i class="fas fa-calendar-check mr-3 text-green-500"></i>Danh sách Đặt Phòng
                 </h1>
             </div>
-
             <c:if test="${not empty bookings}">
                 <div class="overflow-x-auto bg-white rounded shadow">
                     <table class="min-w-full divide-y divide-gray-200">

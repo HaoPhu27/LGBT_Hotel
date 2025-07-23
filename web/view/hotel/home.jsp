@@ -10,11 +10,6 @@
     <body class="bg-gray-900 pt-8 min-h-screen font-sans text-gray-100">
 
         <%@ include file="header.jsp" %>
-        <%
-           if (session.getAttribute("username") != null) {
-               username = (String) session.getAttribute("username");
-           }
-        %>
 
         <!-- Hero Section -->
         <section id="home"

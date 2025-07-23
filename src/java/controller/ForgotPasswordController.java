@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
 import model.Users;
 import Service.MailService;
+import java.security.SecureRandom;
 
 /**
  *
@@ -33,10 +34,12 @@ public class ForgotPasswordController extends HttpServlet {
 
         if (user != null) {
             try {
-                String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
+                SecureRandom secureRandom = new SecureRandom();
+                int otp = secureRandom.nextInt(900000) + 100000;
+                String otpString = String.valueOf(otp);
 
                 HttpSession session = request.getSession();
-                session.setAttribute("resetOtp", otp);
+                session.setAttribute("resetOtp", otpString);
                 session.setAttribute("resetUserId", user.getUserId());
 
                 String content = "<p>Mã xác nhận khôi phục mật khẩu của bạn là:</p>"

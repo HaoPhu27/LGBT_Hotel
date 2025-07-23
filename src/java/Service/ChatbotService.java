@@ -2,16 +2,32 @@ package Service;
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
+import dao.RoomDAO;
+import java.sql.SQLException;
+import model.Rooms;
+import java.util.List;
 
 public class ChatbotService {
 
     private final String modelId = "gemini-2.5-flash";
-    private final String apiKey = "AIzaSyCrfuRIg4IOmg4XhISin4Jnm0gHkWOGGhQ"; // Nhớ đổi nếu cần
+    private final String apiKey = "AIzaSyCrfuRIg4IOmg4XhISin4Jnm0gHkWOGGhQ";
+
+    private final RoomDAO roomDAO = new RoomDAO(); // Gọi DAO
 
     public ChatbotService() {
     }
 
-    public String chatWithGemini(String userMessage) {
+    public String chatWithGemini(String userMessage) throws SQLException {
+
+        StringBuilder context = new StringBuilder("Danh sách các loại phòng hiện có:\n\n");
+        List<Rooms> rooms = roomDAO.getAllRooms(); 
+
+        for (Rooms r : rooms) {
+            context.append("• Tên phòng: ").append(r.getRoomNumber()).append("\n")
+                   .append("  • Mô tả: ").append(r.getNote()).append("\n")
+                   .append("  • Giá: ").append(r.getPrice()).append(" VND/đêm\n\n");
+        }
+
         String prompt = """
 Bạn là nhân viên lễ tân khách sạn. Trả lời bằng tiếng Việt, ngắn gọn, dễ hiểu.
 
@@ -27,8 +43,7 @@ Yêu cầu:
 - Không cần đưa hình ảnh.
 - Nếu không biết thì trả lời lịch sự, ngắn gọn.
 
-Câu hỏi của khách:
-""" + userMessage;
+""" + context.toString() + "\nCâu hỏi của khách:\n" + userMessage;
 
         try (Client client = (apiKey == null || apiKey.isEmpty())
                 ? new Client()

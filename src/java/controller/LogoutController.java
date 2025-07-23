@@ -19,19 +19,6 @@ public class LogoutController extends HttpServlet {
             session.invalidate();
         }
 
-        // ✅ (Tuỳ chọn) Xoá cookie ghi nhớ email
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie ck : cookies) {
-                if ("rememberedEmail".equals(ck.getName())) {
-                    ck.setValue("");
-                    ck.setMaxAge(0);
-                    response.addCookie(ck);
-                }
-            }
-        }
-
-        // ✅ Chuyển về login
         response.sendRedirect(request.getContextPath() + "/login");
     }
 }

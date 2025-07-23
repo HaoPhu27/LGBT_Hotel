@@ -18,6 +18,7 @@ public class MailService {
         props.put("mail.smtp.port", "587");
 
         Session session = Session.getInstance(props, new Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(fromEmail, appPassword);
             }
@@ -29,7 +30,6 @@ public class MailService {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject(MimeUtility.encodeText(subject, "UTF-8", "B"));
 
-            // Gửi HTML có UTF-8
             message.setContent(content, "text/html; charset=UTF-8");
 
             Transport.send(message);

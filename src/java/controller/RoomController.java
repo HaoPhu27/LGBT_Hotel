@@ -33,7 +33,7 @@ public class RoomController extends HttpServlet {
     public void init() {
         roomDAO = new RoomDAO();
         serviceDAO = new ServiceDAO();
-        bookingsDAO = new BookingsDAO(); // ✅ Khai báo đúng biến
+        bookingsDAO = new BookingsDAO(); 
     }
 
     @Override

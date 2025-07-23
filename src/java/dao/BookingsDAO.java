@@ -47,7 +47,7 @@ public class BookingsDAO extends DBContext {
         return list;
     }
 
-    // ✅ Tạo mới một đơn đặt phòng
+  
     public boolean createBooking(Bookings booking) {
         String sql = "INSERT INTO Bookings (customer_id, room_id, check_in, check_out, status) VALUES (?, ?, ?, ?, ?)";
 

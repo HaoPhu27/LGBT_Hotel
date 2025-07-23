@@ -12,7 +12,7 @@ public class ChatbotService {
     private final String modelId = "gemini-2.5-flash";
     private final String apiKey = "AIzaSyCrfuRIg4IOmg4XhISin4Jnm0gHkWOGGhQ";
 
-    private final RoomDAO roomDAO = new RoomDAO(); // Gọi DAO
+    private final RoomDAO roomDAO = new RoomDAO(); 
 
     public ChatbotService() {
     }

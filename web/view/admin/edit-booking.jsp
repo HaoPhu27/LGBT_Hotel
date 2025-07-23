@@ -61,7 +61,7 @@
             </table>
 
             <div class="flex justify-end gap-2 mt-6">
-                <a href="${pageContext.request.contextPath}/admin/bookings"
+                <a href="${pageContext.request.contextPath}/bookingadmin"
                    class="px-4 py-2 rounded bg-gray-400 text-white">Hủy</a>
                 <button type="submit" class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">
                     Lưu thay đổi

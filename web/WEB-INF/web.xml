@@ -45,10 +45,6 @@
         <url-pattern>/roomadmin</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>RevenueController</servlet-name>
-        <url-pattern>/revenue</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>BookingEditController</servlet-name>
         <url-pattern>/bookingedit</url-pattern>
     </servlet-mapping>
@@ -90,5 +86,13 @@
     <filter-mapping>
         <filter-name>RoomDeleteFilter</filter-name>
         <url-pattern>/deleteroom</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>ResetPasswordValidationFilter</filter-name>
+        <filter-class>Filter.ResetPasswordValidationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ResetPasswordValidationFilter</filter-name>
+        <url-pattern>/reset-password</url-pattern>
     </filter-mapping>
 </web-app>

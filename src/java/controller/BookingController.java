@@ -127,7 +127,7 @@ public class BookingController extends HttpServlet {
             booking.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
             int bookingId = bookingsDAO.createBookingReturnId(booking);
-            roomDAO.updateRoomStatus(roomId, "booked");
+            roomDAO.updateRoomStatus(roomId, "Booked");
             // Dịch vụ thêm
             String[] serviceIds = request.getParameterValues("serviceIds");
             if (serviceIds != null && bookingId > 0) {

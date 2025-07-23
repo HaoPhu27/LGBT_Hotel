@@ -109,12 +109,6 @@
             </h3>
             <canvas id="roomChart"></canvas>
         </div>
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-            <h3 class="text-lg font-semibold mb-4">
-                <i class="fas fa-chart-line mr-2 text-green-500"></i>Doanh Thu Theo Tháng
-            </h3>
-            <canvas id="revenueChart"></canvas>
-        </div>
     </div>
 </section>
 </main>
@@ -132,25 +126,6 @@
             },
             options: {
                 plugins: { legend: { position: 'bottom' } },
-                responsive: true
-            }
-        });
-
-        new Chart(document.getElementById('revenueChart'), {
-            type: 'line',
-            data: {
-                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'],
-                datasets: [{
-                    label: 'Doanh Thu (triệu)',
-                    data: [12, 15, 8, 20, 18, 15.6],
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59,130,246,.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                scales: { y: { beginAtZero: true } },
                 responsive: true
             }
         });

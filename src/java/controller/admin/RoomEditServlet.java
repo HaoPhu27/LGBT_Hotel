@@ -33,7 +33,7 @@ public class RoomEditServlet extends HttpServlet {
             request.setAttribute("room", room);
             request.getRequestDispatcher("/view/admin/edit-room.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();  // ❗ Bắt buộc cần dòng này để xem lỗi
+            e.printStackTrace();  
             response.sendRedirect("rooms");
         }
     }

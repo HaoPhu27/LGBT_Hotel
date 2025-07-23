@@ -23,7 +23,6 @@ import model.Rooms;
  */
 @WebServlet("/searchRoom")
 public class SearchRoomController extends HttpServlet {
-    
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -38,13 +37,28 @@ public class SearchRoomController extends HttpServlet {
 
         BigDecimal min = null, max = null;
         try {
-            if (minStr != null && !minStr.isEmpty()) min = new BigDecimal(minStr);
-            if (maxStr != null && !maxStr.isEmpty()) max = new BigDecimal(maxStr);
-        } catch (NumberFormatException ignored) {}
+            if (minStr != null && !minStr.isEmpty()) {
+                min = new BigDecimal(minStr);
+            }
+            if (maxStr != null && !maxStr.isEmpty()) {
+                max = new BigDecimal(maxStr);
+            }
+        } catch (NumberFormatException ignored) {
+        }
+        int page = 1;
+        int limit = 6; // phòng mỗi trang
+        try {
+            page = Integer.parseInt(req.getParameter("page"));
+        } catch (Exception e) {
+        }
+
+        int offset = (page - 1) * limit;
 
         try {
             RoomDAO dao = new RoomDAO();
-            List<Rooms> rooms = dao.searchRooms(keyword, min, max, status, type, sort);
+            List<Rooms> rooms = dao.searchRoomsPaginated(keyword, min, max, status, type, sort, offset, limit);
+            int total = dao.countSearchRooms(keyword, min, max, status, type);
+            int totalPages = (int) Math.ceil((double) total / limit);
 
             req.setAttribute("rooms", rooms);
 
@@ -55,7 +69,8 @@ public class SearchRoomController extends HttpServlet {
             req.setAttribute("status", status);
             req.setAttribute("type", type);
             req.setAttribute("sort", sort);
-
+            req.setAttribute("totalPages", totalPages);
+            req.setAttribute("currentPage", page);
             req.getRequestDispatcher("/view/hotel/rooms.jsp").forward(req, resp);
         } catch (SQLException e) {
             req.setAttribute("error", "Lỗi khi tìm kiếm phòng.");

@@ -3,9 +3,15 @@
 <%@ page import="model.Rooms" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%
-    List<?> rooms = (List<?>) request.getAttribute("rooms");
+    String role = (String) session.getAttribute("userRole");
+    if (role == null || !role.equals("admin")) {
+        response.sendRedirect(request.getContextPath() + "/home");
+        return;
+    }
+%>
+<%
+    List<Rooms> rooms = (List<Rooms>) request.getAttribute("rooms");
     int totalRooms = (rooms != null) ? rooms.size() : 0;
     long bookedRooms = 0;
     if (rooms != null) {

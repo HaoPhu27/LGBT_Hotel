@@ -8,8 +8,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChatbotController extends HttpServlet {
 
@@ -29,7 +32,12 @@ public class ChatbotController extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
 
         String userMessage = request.getParameter("message");
-        String botReply = chatService.chatWithGemini(userMessage != null ? userMessage : "");
+        String botReply = null;
+        try {
+            botReply = chatService.chatWithGemini(userMessage != null ? userMessage : "");
+        } catch (SQLException ex) {
+            Logger.getLogger(ChatbotController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         // Gửi về JSON
         String json = "{\"response\": " + escapeJson(botReply) + "}";

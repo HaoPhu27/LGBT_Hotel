@@ -8,8 +8,8 @@ import java.util.Properties;
 public class MailService {
 
     public static void send(String toEmail, String subject, String content) {
-        final String fromEmail = "ducanhdeptraile651@gmail.com"; // Email của bạn
-        final String appPassword = "msrf hagi oken wwdj";         // App password từ Gmail
+        final String fromEmail = "ducanhdeptraile651@gmail.com";
+        final String appPassword = "msrf hagi oken wwdj";        
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");

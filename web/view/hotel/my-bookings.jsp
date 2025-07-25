@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.*, model.Bookings, model.Payment, dao.PaymentDAO" %>
-<%@ include file="header.jsp" %>
+
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
     List<Bookings> bookings = (List<Bookings>) request.getAttribute("bookings");
@@ -14,6 +14,7 @@
         <title>Phòng đã đặt</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.tailwindcss.com"></script>
+        <%@ include file="header.jsp" %>
     </head>
 
     <body  class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col">

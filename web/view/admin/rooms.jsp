@@ -12,6 +12,7 @@
         window.history.replaceState({}, document.title, window.location.pathname);
     </script>
 </c:if>
+    
 <div class="flex min-h-screen bg-gray-100">
 
     <jsp:include page="sidebar.jsp" />
